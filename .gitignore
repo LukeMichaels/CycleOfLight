@@ -1,0 +1,11 @@
+.pio/build/**
+.pio/build/
+.pio/libdeps/
+.pio/libdeps/**
+*.o
+*.a
+.vscode/c_cpp_properties.json
+.vscode/extensions.json
+1D/*
+CycleOfLight/Backlog.txt
+.DS_Store
