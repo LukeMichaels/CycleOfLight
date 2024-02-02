@@ -7,7 +7,7 @@
 #include "noise.h"
 const int hallSensorPin = 32;
 unsigned long lastTime = 0;        // the last time the sensor was triggered
-unsigned long debounceDelay = 250; // debounce delay in milliseconds
+unsigned long debounceDelay = 250; // in milliseconds
 int rpm = 0;
 const int nextButtonPin = 34;
 const int prevButtonPin = 35;
@@ -30,6 +30,10 @@ const uint8_t kMatrixHeight = 43;
 #define SATURATION 255
 #define BRIGHTNESS 204 // 127 for 50%, 204 for 80%
 #define NUM_PATTERNS 13
+#define BUTTON_NEXT_PIN 35
+#define BUTTON_PREV_PIN 34
+int buttonNextState = HIGH;
+int buttonPrevState = HIGH;
 float distances[NUM_LEDS_TOTAL];
 uint8_t ballX, ballY;
 uint16_t XY(uint16_t x, uint16_t y)
@@ -83,7 +87,6 @@ uint16_t XY(uint16_t x, uint16_t y)
       55, 56, 57, 58, 59, 60, 61, 62, 63, 64, 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82,
       1183, 54, 53, 52, 51, 50, 49, 48, 47, 46, 45, 44, 43, 42, 41, 40, 39, 38, 37, 36, 35, 34, 33, 32, 31, 30, 29, 28,
       0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27};
-
   uint16_t i = (y * kMatrixWidth) + x;
   uint16_t j = XYTable[i];
   return j;
@@ -92,6 +95,8 @@ uint16_t XY(uint16_t x, uint16_t y)
 void setup()
 {
   pinMode(hallSensorPin, INPUT);
+  pinMode(BUTTON_NEXT_PIN, INPUT_PULLUP);
+  pinMode(BUTTON_PREV_PIN, INPUT_PULLUP);
   Serial.begin(115200);
   FastLED.addLeds<NEOPIXEL, 0>(leds[0], NUM_LEDS_PER_STRIP);
   FastLED.addLeds<NEOPIXEL, 1>(leds[1], NUM_LEDS_PER_STRIP);
@@ -125,9 +130,6 @@ void setup()
 
     distances[i] = fastSqrt(sq(x - ballX) + sq(y - ballY));
   }
-  // Set the pin mode for the buttons
-  pinMode(nextButtonPin, INPUT_PULLUP);
-  pinMode(prevButtonPin, INPUT_PULLUP);
 }
 
 void clearDisplay()
@@ -148,7 +150,7 @@ void fadeOutAndClear(void (*pattern)())
     FastLED.setBrightness(j);
     pattern(); // Call the pattern function in each iteration
     FastLED.show();
-    delay(20); // Increase delay to 20 ms
+    delay(30); // Increase delay to 20 ms
   }
   clearDisplay();
 }
@@ -160,7 +162,7 @@ void fadeIn(void (*pattern)())
     FastLED.setBrightness(j);
     pattern(); // Call the pattern function in each iteration
     FastLED.show();
-    delay(20); // Increase delay to 20 ms
+    delay(30); // Increase delay to 20 ms
   }
 }
 
@@ -194,28 +196,10 @@ void fadeTransition(void (*oldPattern)(), void (*newPattern)())
     }
 
     FastLED.show();
-    delay(10); // Decrease delay to 10 ms
+    delay(30); // may need to adjust this
   }
 }
 
-// availible patterns
-// fireFlies();
-// ballWaves();
-// tunnelIn();
-// tunnelOut(); // use
-// plasma();
-// psychWaves(); // use
-// psychWavesReversed(); // kind of bugged, don't use for now
-// psychWaterfall();
-// psychWaterfallReverse(); // use this one
-// brainWaves();
-// pyramids();
-// rorschach();
-// vaporPyramid();
-// psychSpin();
-// pinWheel();
-// trippyClouds();
-// galaxy();
 void (*patternFunctions[])(void) = {
     psychWaves,
     pyramids,
@@ -251,9 +235,35 @@ enum Pattern
 
 // Initialize the current pattern to NONE
 Pattern currentPattern = NONE;
+Pattern newPattern;
 
 void loop()
 {
+  // //  Read the button states and change the pattern
+  // buttonNextState = digitalRead(BUTTON_NEXT_PIN);
+  // buttonPrevState = digitalRead(BUTTON_PREV_PIN);
+
+  // // If the next button is pressed, move to the next pattern
+  // if (buttonNextState == LOW)
+  // {
+  //   Serial.println("next");
+  //   newPattern = static_cast<Pattern>((static_cast<int>(currentPattern) + 1) % static_cast<int>(BRAIN_WAVES + 1));
+  //   Serial.println("Changed pattern to: " + String(static_cast<int>(newPattern)));
+  //   delay(200);                  // Debounce delay
+  //   currentPattern = newPattern; // Update currentPattern
+  // }
+
+  // // If the previous button is pressed, move to the previous pattern
+  // if (buttonPrevState == LOW)
+  // {
+  //   Serial.println("previous");
+  //   int prevPattern = static_cast<int>(currentPattern) - 1;
+  //   newPattern = static_cast<Pattern>(prevPattern < 0 ? BRAIN_WAVES : prevPattern);
+  //   Serial.println("Changed pattern to: " + String(static_cast<int>(newPattern)));
+  //   delay(200);                  // Debounce delay
+  //   currentPattern = newPattern; // Update currentPattern
+  // }
+
   int sensorValue = digitalRead(hallSensorPin);
 
   // If the sensor is triggered (magnetic field detected) and enough time has passed since the last trigger (debounce)
