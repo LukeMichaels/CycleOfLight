@@ -268,57 +268,49 @@ void loop()
   }
 
   Pattern newPattern;
-  if (rpm >= 0 && rpm < 15)
+  if (rpm >= 0 && rpm < 20)
   {
-    // newPattern = GALAXY;
-    // newPattern = PYRAMIDS;
-    // newPattern = TUNNEL_OUT;
-    // newPattern = PSYCH_WATERFALL_REVERSE;
-    // newPattern = TRIPPY_CLOUDS;
-    // newPattern = VAPOR_PYRAMID;
-    // newPattern = RORSCHACH; // currently broken :(
-    newPattern = BALL_WAVES;
+    newPattern = GALAXY;
   }
-  else if (rpm >= 16 && rpm < 30)
+  else if (rpm >= 21 && rpm < 40)
   {
     newPattern = RORSCHACH;
-    // newPattern = PYRAMIDS;
   }
-  else if (rpm >= 46 && rpm < 60)
+  else if (rpm >= 41 && rpm < 60)
+  {
+    newPattern = PYRAMIDS;
+  }
+  else if (rpm >= 61 && rpm < 80)
   {
     newPattern = TUNNEL_OUT;
   }
-  else if (rpm >= 61 && rpm < 75)
-  {
-    newPattern = RORSCHACH;
-  }
-  else if (rpm >= 76 && rpm < 90)
+  else if (rpm >= 81 && rpm < 100)
   {
     newPattern = PSYCH_WATERFALL_REVERSE;
   }
-  else if (rpm >= 91 && rpm < 106)
-  {
-    newPattern = VAPOR_PYRAMID;
-  }
-  else if (rpm >= 106 && rpm < 135)
-  {
-    newPattern = BRAIN_WAVES;
-  }
-  else if (rpm >= 136 && rpm < 150)
-  {
-    newPattern = BALL_WAVES;
-  }
-  else if (rpm >= 151 && rpm < 165)
-  {
-    newPattern = PSYCH_WAVES;
-  }
-  else if (rpm >= 166 && rpm < 180)
+  else if (rpm >= 101 && rpm < 120)
   {
     newPattern = TRIPPY_CLOUDS;
   }
-  else if (rpm >= 181 && rpm < 195)
+  else if (rpm >= 121 && rpm < 140)
+  {
+    newPattern = BALL_WAVES;
+  }
+  else if (rpm >= 141 && rpm < 160)
+  {
+    newPattern = BRAIN_WAVES;
+  }
+  else if (rpm >= 161 && rpm < 180)
+  {
+    newPattern = PSYCH_WAVES;
+  }
+  else if (rpm >= 181 && rpm < 200)
   {
     newPattern = PLASMA;
+  }
+  else if (rpm > 200)
+  {
+    newPattern = VAPOR_PYRAMID;
   }
   else if (rpm >= 196 && rpm < 210)
   {
@@ -433,7 +425,6 @@ void loop()
 
   FastLED.show();
 }
-
 
 void plasma()
 {
